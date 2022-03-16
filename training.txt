@@ -1,0 +1,1 @@
+Epoch: 1, Idx: 5, Training Loss: 0.6843, Training Accuracy: 0.59%
