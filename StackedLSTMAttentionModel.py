@@ -147,11 +147,16 @@ def train(dataloader, model, epoch):
             print(f'Epoch: {epoch}, Idx: {idx+1}, Training Loss: {loss.item():.4f}, Training Accuracy: {acc.item():.2f}%')
         total_epoch_loss = loss.item()
         if total_epoch_loss <= TOLERENCE:
-            return
+            return True
 
-filename = "models/model_"
+end_training = False
 for epoch in range(1, EPOCHS + 1):
-    train(dt_load, model, epoch)
-filename = "models/model_"+str(1)+'.pth'
-torch.save(model.state_dict(), filename)
+    end_training=train(dt_load, model, epoch)
+    if end_training:
+        filename = "models/model_"+str(1)+'.pth'
+        torch.save(model.state_dict(), filename)
+        break
+if not end_training:
+    filename = "models/model_"+str(1)+'.pth'
+    torch.save(model.state_dict(), filename)
 

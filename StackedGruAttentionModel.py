@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import warnings
 warnings.filterwarnings('ignore')
 
 
-# In[2]:
+# In[ ]:
 
 
 EPOCHS = 30
@@ -33,7 +33,7 @@ from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 from sklearn.model_selection import train_test_split
 
 
-# In[3]:
+# In[ ]:
 
 
 # word2idx = torch.load('dictionary/wordDict.pth')
@@ -44,7 +44,7 @@ pre_trained = nn.Embedding.from_pretrained(weights)
 pre_trained.weight.requires_grad=False
 
 
-# In[4]:
+# In[ ]:
 
 
 def collate_batch(batch):
@@ -76,7 +76,7 @@ training = VectorizeData('variable_level_zero.csv')
 dt_load = DataLoader(training, batch_size=BATCH_SIZE_TWO, shuffle=False, collate_fn=collate_batch)
 
 
-# In[5]:
+# In[ ]:
 
 
 # Part implementation of aravindpal's Text Classifier as found @  https://www.analyticsvidhya.com/blog/2020/01/first-text-classification-in-pytorch/
@@ -123,16 +123,12 @@ class EmbeddingGRUAtteionModel(nn.Module):
         return outputs
 
 
-# In[6]:
+# In[ ]:
 
 
 model = EmbeddingGRUAtteionModel(pre_trained=pre_trained, num_labels=1)
 optimizer = optim.Adam(model.parameters())
 criterion = nn.BCELoss()
-
-
-# In[ ]:
-
 
 def train(dataloader, model, epoch):
     #initialize every epoch 
@@ -153,17 +149,22 @@ def train(dataloader, model, epoch):
         #update the weights
         optimizer.step()  
         steps += 1
-        if steps % 1 == 0:
+        if steps % 1  == 0:
             print(f'Epoch: {epoch}, Idx: {idx+1}, Training Loss: {loss.item():.4f}, Training Accuracy: {acc.item():.2f}%')
         total_epoch_loss = loss.item()
         if total_epoch_loss <= TOLERENCE:
-            return
+            return True
 
-filename = "models/model_"
+end_training = False
 for epoch in range(1, EPOCHS + 1):
-    train(dt_load, model, epoch)
-filename = "models/model_"+str(2)+'.pth'
-torch.save(model.state_dict(), filename)
+    end_training=train(dt_load, model, epoch)
+    if end_training:
+        filename = "models/model_"+str(2)+'.pth'
+        torch.save(model.state_dict(), filename)
+        break
+if not end_training:
+    filename = "models/model_"+str(2)+'.pth'
+    torch.save(model.state_dict(), filename)
 
 
 # In[ ]:
