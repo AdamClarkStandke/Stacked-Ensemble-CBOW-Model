@@ -47,4 +47,3 @@ Here is extra information, regarding  structure of this repo:
 * https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
 * https://pytorch.org/tutorials/
 
-* and Alexis, thank you!
